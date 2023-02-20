@@ -26,7 +26,7 @@ open class BaseTestSetup {
                 .setAvd("Pixel_6_API_33")
                 .setApp("/Users/aleemhaq/Documents/theScoreChallenge/theScore.apk")
                 .setAutoGrantPermissions(true)
-                .eventTimings()
+//                .eventTimings()
 
             this.driver = AndroidDriver( URL("http://127.0.0.1:4723"), options)
         } finally {
