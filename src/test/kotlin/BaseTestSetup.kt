@@ -2,6 +2,7 @@ import io.appium.java_client.android.AndroidDriver
 import io.appium.java_client.android.options.UiAutomator2Options
 import io.appium.java_client.service.local.AppiumDriverLocalService
 import org.junit.jupiter.api.AfterAll
+import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.TestInstance
 import java.net.URL
@@ -28,7 +29,10 @@ open class BaseTestSetup {
                 .setAutoGrantPermissions(true)
 //                .eventTimings()
 
-            this.driver = AndroidDriver( URL("http://127.0.0.1:4723"), options)
+            driver = AndroidDriver( URL("http://127.0.0.1:4723"), options)
+
+            val popupModals = PopupModals(driver)
+            assertTrue(popupModals.waitForSplashScreenEnd())
         } finally {
 //            service.stop()
         }

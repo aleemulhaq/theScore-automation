@@ -1,5 +1,6 @@
 import io.appium.java_client.AppiumBy
 import io.appium.java_client.android.AndroidDriver
+import org.openqa.selenium.WebDriver
 import org.openqa.selenium.WebElement
 import org.openqa.selenium.support.ui.ExpectedConditions
 import org.openqa.selenium.support.ui.WebDriverWait
@@ -20,5 +21,13 @@ class SearchView(driver: AndroidDriver?) : BaseActions(driver) {
         val element : WebElement? = WebDriverWait(driver, Duration.ofSeconds(10))
             .until(ExpectedConditions.elementToBeClickable(AppiumBy.id(searchBar)))
         return sendKeysToElement(element, keys)
+    }
+
+    fun verifySearchBarDisplayed(): Boolean {
+        val element = WebDriverWait(driver, Duration.ofSeconds(10))
+            .until { driver: WebDriver ->
+                driver.findElement(AppiumBy.id(searchBar))
+            }
+        return element.isDisplayed
     }
 }

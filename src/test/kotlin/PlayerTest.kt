@@ -16,14 +16,17 @@ class PlayerTest: BaseTestSetup() {
         assertTrue(popupModals.dismissPopupModal())
         val topNavBar = TopNavBar(driver)
         assertTrue(topNavBar.tapSearchBar())
-        val playerName = "Cristiano Ronaldo"
+        val playerSearchName = "Cristiano Ronaldo"
         val searchView = SearchView(driver)
-        assertTrue(searchView.sendKeysSearchBar(playerName))
+        assertTrue(searchView.sendKeysSearchBar(playerSearchName))
         assertTrue(searchView.tapSearchResult())
         val player = Player(driver)
-        assertEquals(playerName, player.getHeaderPlayerName())
+        val playerPageName = player.getHeaderPlayerName()
+        assertEquals(playerSearchName, playerPageName)
         assertTrue(player.tapInfoTab())
         assertTrue(player.verifyInfoTabSelected())
         assertTrue(player.verifyInfoBodyDisplayed())
+        assertTrue(topNavBar.tapBackButton())
+        assertTrue(searchView.verifySearchBarDisplayed())
     }
 }
