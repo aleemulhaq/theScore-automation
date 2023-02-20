@@ -16,7 +16,7 @@ open class BaseTestSetup {
 //    protected val options: UiAutomator2Options? = null
 
     @BeforeAll
-    fun setUp() {
+    fun setup() {
 //        service = AppiumDriverLocalService.buildDefaultService()
         service.start()
         try {

@@ -16,7 +16,7 @@ class TeamTest: BaseTestSetup() {
         val popupModals = PopupModals(driver)
         assertTrue(popupModals.dismissPopupModal())
     }
-
+    
     @Test()
     fun navigateToTeamStats() {
         val topNavBar = TopNavBar(driver)
