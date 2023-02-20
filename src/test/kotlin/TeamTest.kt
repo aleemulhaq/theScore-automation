@@ -35,6 +35,11 @@ class TeamTest: BaseTestSetup() {
         assertEquals(teamSearchName, searchView.getSearchBarText())
     }
 
+    @Test
+    fun `caveat of using var`() {
+    assertTrue(true)
+    }
+
     @AfterEach
     fun navigateBackToHomePage() {
         val topNavBar = TopNavBar(driver)
