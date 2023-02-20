@@ -12,14 +12,10 @@ class Onboarding(driver: AndroidDriver?) : BaseActions(driver) {
 
 
     fun clickOnboardingNext(): Boolean {
-        val element : WebElement? = WebDriverWait(driver, Duration.ofSeconds(20))
-            .until(ExpectedConditions.elementToBeClickable(AppiumBy.id(primaryNextButton)))
-        return clickElement(element)
+        return clickElement(AppiumBy.id(primaryNextButton))
     }
 
     fun clickOnboardingSportItemName(): Boolean {
-        val element : WebElement? = WebDriverWait(driver, Duration.ofSeconds(10))
-            .until(ExpectedConditions.elementToBeClickable(AppiumBy.id(sportItemName)))
-        return clickElement(element)
+        return clickElement(AppiumBy.id(sportItemName))
     }
 }
