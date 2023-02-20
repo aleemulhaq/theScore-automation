@@ -4,7 +4,10 @@ import org.openqa.selenium.WebElement
 open class BaseActions(val driver:AndroidDriver?) {
 
     fun clickElement(element: WebElement?): Boolean {
-            element?.click()
+        if (element == null) {
+            return false
+        }
+        element.click()
         return true
     }
 }
