@@ -23,11 +23,12 @@ class SearchView(driver: AndroidDriver?) : BaseActions(driver) {
         return sendKeysToElement(element, keys)
     }
 
-    fun verifySearchBarDisplayed(): Boolean {
+    fun getSearchBarText(): String {
         val element = WebDriverWait(driver, Duration.ofSeconds(10))
             .until { driver: WebDriver ->
                 driver.findElement(AppiumBy.id(searchBar))
             }
-        return element.isDisplayed
+//            wait.until(ExpectedConditions.visibilityOf(element))
+        return getElementText(element)
     }
 }

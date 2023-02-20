@@ -1,45 +1,43 @@
 import io.appium.java_client.AppiumBy
 import io.appium.java_client.android.AndroidDriver
 import org.openqa.selenium.WebDriver
-import org.openqa.selenium.WebElement
-import org.openqa.selenium.support.ui.ExpectedConditions
 import org.openqa.selenium.support.ui.WebDriverWait
 import java.time.Duration
 
-class Player(driver: AndroidDriver?) : BaseActions(driver) {
+class Team(driver: AndroidDriver?) : BaseActions(driver) {
 
-    private val headerPlayerName = "txt_player_name"
-    private val infoTab = "Info"
+    private val teamHeader = "team_name"
+    private val statsTab = "Team Stats"
     private val infoTitle = "title"
     private val infoValue = "value"
 
-    fun getHeaderPlayerName(): String {
+    fun getHeaderText(): String {
         val element = WebDriverWait(driver, Duration.ofSeconds(10))
             .until { driver: WebDriver ->
-                driver.findElement(AppiumBy.id(headerPlayerName))
+                driver.findElement(AppiumBy.id(teamHeader))
             }
         return getElementText(element)
     }
 
-    fun tapInfoTab(): Boolean {
+    fun tapStatsTab(): Boolean {
 //        val element : WebElement? = WebDriverWait(driver, Duration.ofSeconds(10))
 //            .until(ExpectedConditions.presenceOfElementLocated(AppiumBy.accessibilityId(infoTab)))
         val element = WebDriverWait(driver, Duration.ofSeconds(10))
             .until { driver: WebDriver ->
-                driver.findElement(AppiumBy.accessibilityId(infoTab))
+                driver.findElement(AppiumBy.accessibilityId(statsTab))
             }
         return clickElement(element)
     }
 
-    fun verifyInfoTabSelected(): Boolean {
+    fun verifyStatsTabSelected(): Boolean {
         val element = WebDriverWait(driver, Duration.ofSeconds(10))
             .until { driver: WebDriver ->
-                driver.findElement(AppiumBy.accessibilityId(infoTab))
+                driver.findElement(AppiumBy.accessibilityId(statsTab))
             }
         return isElementSelected(element)
     }
 
-    fun verifyInfoBodyDisplayed(): Boolean {
+    fun verifyStatsBodyDisplayed(): Boolean {
         val titleEl = WebDriverWait(driver, Duration.ofSeconds(10))
             .until { driver: WebDriver ->
                 driver.findElement(AppiumBy.id(infoTitle))
