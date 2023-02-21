@@ -2,29 +2,21 @@ import BaseActions.W3cActions.doSwipe
 import io.appium.java_client.AppiumBy
 import io.appium.java_client.android.AndroidDriver
 import org.openqa.selenium.Point
+import java.util.*
 import kotlin.math.min
 
 class Team(driver: AndroidDriver?) : BaseActions(driver) {
 
     private val teamHeader = "team_name"
-    private val statsTab = "Team Stats"
     private val statTitle = "text_category_name"
     private val statValue = "text_value"
     private val statRank = "text_formatted_rank"
+    private val statSubHeaderVal = "header_secondary_text"
+    private val statSubHeaderText = "header_text"
 
     fun getHeaderText(): String {
         logger.info("Getting text of team header")
         return getElementText(AppiumBy.id(teamHeader))
-    }
-
-    fun tapStatsTab(): Boolean {
-        logger.info("Tapping team stats tab")
-        return clickElement(AppiumBy.accessibilityId(statsTab))
-    }
-
-    fun verifyStatsTabSelected(): Boolean {
-        logger.info("Verifying team stats tab is selected")
-        return isElementSelected(AppiumBy.accessibilityId(statsTab))
     }
 
     // remove leading and trailing parenthesis to match api
@@ -85,4 +77,14 @@ class Team(driver: AndroidDriver?) : BaseActions(driver) {
             return false
         }
     }
+
+    fun verifyStatSubHeaderDisplayed(name: String): Boolean {
+        val cleanText : String = getElementText(AppiumBy.id(statSubHeaderText)).lowercase(Locale.getDefault()).trim()
+        logger.info("Verifying stats sub header text {$cleanText} matches: {$name}")
+        return cleanText.contains(name.lowercase(Locale.getDefault()).trim())    }
+
+    fun verifyStatSubHeaderValueDisplayed(value :String): Boolean {
+        val cleanVal : String = getElementText(AppiumBy.id(statSubHeaderVal)).lowercase(Locale.getDefault()).trim()
+        logger.info("Verifying stats sub header value {$cleanVal} matches: {$value}")
+        return cleanVal.contains(value.lowercase(Locale.getDefault()).trim())    }
 }
