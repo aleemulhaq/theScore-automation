@@ -62,7 +62,6 @@ e.g:
 #### rigid tests, only need to update page models if ui changes or for ios
 #### abstract classes
 #### logger
-#### screenshots of failure
 #### multiple device? variable device? hardware device?
 
 ## Test implementation
