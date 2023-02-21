@@ -20,6 +20,10 @@ open class BaseActions(val driver:AndroidDriver?) {
         return element.text
     }
 
+    fun getElementText(element: WebElement): String {
+        return element.text
+    }
+
     fun isElementSelected(locator: By): Boolean {
         val element = findElement(locator) ?: return false
         return element.isSelected
@@ -38,6 +42,21 @@ open class BaseActions(val driver:AndroidDriver?) {
             null
         }
         return element
+    }
+
+    fun findListOfElement(locator: By): List<WebElement>{
+        var elementList : List<WebElement> = try {
+            WebDriverWait(driver, Duration.ofSeconds(10))
+                .until { driver: WebDriver ->
+                    driver.findElements(locator)
+                }
+        } catch (e : NoSuchElementException) {
+            return emptyList()
+        } catch (e : TimeoutException) {
+            //            "Timed out while trying to find element"
+            return emptyList()
+        }
+        return elementList
     }
 
     fun clickElement(locator: By): Boolean {
