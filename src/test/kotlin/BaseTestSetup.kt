@@ -5,6 +5,7 @@ import org.junit.jupiter.api.AfterAll
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.TestInstance
+import java.io.File
 import java.net.URL
 
 
@@ -17,6 +18,8 @@ open class BaseTestSetup {
 
     @BeforeAll
     fun setup() {
+        val directory = File("");
+        val appPath = directory.absolutePath + "/theScore.apk"
 //        service = AppiumDriverLocalService.buildDefaultService()
         service.start()
         try {
@@ -25,9 +28,8 @@ open class BaseTestSetup {
                 .setPlatformName("Android")
                 .setAutomationName("UiAutomator2")
                 .setAvd("Pixel_6_API_33")
-                .setApp("/Users/aleemhaq/Documents/theScoreChallenge/theScore.apk")
+                .setApp(appPath)
                 .setAutoGrantPermissions(true)
-//                .eventTimings()
 
             driver = AndroidDriver( URL("http://127.0.0.1:4723"), options)
 
