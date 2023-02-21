@@ -32,7 +32,7 @@ class TeamTest: BaseTestSetup() {
         assertEquals(teamSearchName, teamPageName)
         assertTrue(team.tapStatsTab())
         assertTrue(team.verifyStatsTabSelected())
-        assertTrue(team.verifyStatsBodyDisplayed(teamDataClass))
+        assertTrue(team.verifyStatsBodyDisplayed(teamDataClass.getSetOfStatsList()))
         assertTrue(topNavBar.tapBackButton())
         assertEquals(teamSearchName, searchView.getSearchBarText())
     }

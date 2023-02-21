@@ -33,9 +33,7 @@ class Team(driver: AndroidDriver?) : BaseActions(driver) {
         }
     }
 
-    fun verifyStatsBodyDisplayed(teamData : TeamDataClasses): Boolean {
-        val apiStatsSet = teamData.getSetOfStatsList()
-
+    fun verifyStatsBodyDisplayed(apiStatsSet : Set<TeamDataClasses.Stats>): Boolean {
         val listOfStatTitles = findListOfElement(AppiumBy.id(statTitle))
         val listOfStatValues = findListOfElement(AppiumBy.id(statValue))
         val listOfStatRanks = findListOfElement(AppiumBy.id(statRank))

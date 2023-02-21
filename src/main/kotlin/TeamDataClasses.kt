@@ -4,13 +4,14 @@ class TeamDataClasses {
 
     private val teamProfileRes = makeApiRequest("https://api.thescore.com/soccer/teams/62/profile")
 
+    // init obj here so it is cached in class instance
     private val teamProfileObj: TeamProfile = Gson().fromJson(teamProfileRes, TeamProfile::class.java)
 
     fun getApiTeamProfile(): String {
         return teamProfileObj.team.full_name
     }
 
-    fun getStatsList(): List<Stats> {
+    private fun getStatsList(): List<Stats> {
         return teamProfileObj.leagues_team_stats[0].seasons_team_stats[0].stats_groups[0].stats
     }
 
