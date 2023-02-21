@@ -17,11 +17,11 @@ Automate the following steps:
 5. Verify back navigation returns you to the previous page correctly
 
 ## Prerequisites for running this project
-Please make you satisfy the following requirements before building the project
+Please satisfy the following requirements before building the project
 
 **Environment** requirements and dependencies:
-- JVM
-- Android sdk tools, Android home and platform tools path should be set
+- JVM 
+- Java, Android sdk tools, Android home and platform tools path should be set
 - min Node version >= 12
 
 Project level dependencies like below will install through gradle automatically 
@@ -34,25 +34,25 @@ Project level dependencies like below will install through gradle automatically
 Currently, we are able to run the project against two kinds of devices:
 
 #### Real device android phones
-- Hardware android device connection to computer. MAKE SURE developer mode is enabled, and has settings accessible to webdriver
-- If you have multiple hardware devices attached, adb will pick one.
+- Hardware android device connected to a computer. Please make sure developer mode is enabled, and has settings accessible to the webdriver
+- If you have multiple hardware devices attached, adb will pick the first hardware device that is available.
 - If you want to run tests on a specific hardware device, please make sure it is the only hardware Android device plugged in to the computer.
 
 #### Android Emulators
 - Only support **Pixel_6_API_33** specifically at the moment. This is done on purpose so we always have an emulator back up option that boots up.
-- Make sure you have **Pixel_6_API_33** virtual device downloaded through Android sdk tools or Android studio device manager
+- Please have the **Pixel_6_API_33** virtual device downloaded through Android sdk tools or Android studio device manager
 #### Note about connected devices:
-- The only virtual device that will run the tests is **Pixel_6_API_33**, make sure the AVD name matches that
+- The only virtual device that will run the tests is **Pixel_6_API_33** and exactly with that AVD name
 - If a hardware device is connected, it will always be prioritized for testing
 
 
-
 ## Setup & Running tests
-To build the project and executes tests, you just need to run the following command in the project path.
+To build the project and execute tests, run the following command in the project path.
 e.g:
 - Set file path to access my project directory `cd.../../user/../../theScore-automation`,
 - then run `./gradlew clean test`   (run clean, and build test tasks)
 - After each successful test run, the sessions logs are saved in the `projDir/logs/` directory
+- Current directory does not have to be project dir to run the project
 
 
 
@@ -65,8 +65,8 @@ The automation framework is built open the following underlying structure
 - All setup utilities are initialized from the Base Test class
 - All utilities are destructed in the Base Test class at the end of test execution
 - **Test** classes inherit from Base Test class. This allows us to keep tests generic enough where we can support ios in the future with minimal changes. We can overwrite the driver options/capabilities according to the mobile OS, in test classes
-- **Api Request maker** and **Data classes** work together to make efficient API class and cache results in the instance of data classes
-- Kotlin data classes are great, already come equipped with equals() and toString() implementations, to make us write fast and easy to read and understand code. 
+- **Api Request maker** and **Data classes** work together to make efficient API calls and cache results in the instance of these data classes
+- Kotlin data classes are great, already come pre-equipped with equals() and toString() implementations, to make us write fast and easy to read and understand code. 
 - Data classes are also unbothered by field order, giving us confidence in our tests' stability even when using dynamic API data
 - Having **Page Object** classes also gives us the advantage of separating test and page object logic, making it easier to scale the testing framework without introducing fragility
 - All Page Object classes are derived from a **Base Actions** class
@@ -104,13 +104,14 @@ The automation framework is built open the following underlying structure
 
 
 ## Rationale behind test approach
-The approach was based around a Fans/Users first strategy, where I thought about the problem statement in the context of a regular user of theScore app. A regular user expects a user-friendly interface, with ability to quickly and reliably get access to the sports information they seek. In such case, I thought about a common user pattern where they might install the app, go through onboarding, search for a team and view the team stats.
+The approach was based around a Fans/Users first strategy, where I thought about the problem statement in the context of a regular user of theScore app. I expect a user-friendly interface, with the ability to quickly and reliably get access to sports info. In such a case, I thought about a common user pattern where users install the app, go through onboarding, search for a team and view the team stats.
 
- A team-stats page is data intensive, and has high impact to many sports users. Due to such, we have to verify the data displayed on the mobile UI is exactly as expected. This is usually a trivial testing paradigm in backend development, where we can quickly unit-test the api and data.
+ A team-stats page purpose is to serve data that has high impact to many sports users. We have to verify the data displayed on the mobile UI is exactly as expected. This is usually a trivial testing paradigm in backend development, where we can quickly unit-test the api and data.
+ 
  But we also regularly see UI bugs that show data incorrectly, even when the API is healthy.
 
-Verifying the data itself on the UI level was challenging. Especially since, without developer or android root level access, I was unlikely to read any API calls.
-I thought about some public apis that might provide sports stats and info, but there is no gaurantee that that provider will match with theScore api info.
+Verifying the data itself on the UI level was challenging. Especially since, without developer or android root level access, I was unlikely to read any API calls on the mobile app.
+I pondered over some ideas of using public apis that might provide sports stats and info, but there is no gaurantee that a 3rd party stats provider will match with theScore api info.
 
 Eventually I came across theScore website, although qute limited in functionality, the website shows Team page views, and team-stats pages.
 Having the website render this information meant, I can listen into the network traffic in the browser dev tools.
