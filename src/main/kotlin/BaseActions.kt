@@ -1,13 +1,18 @@
+import io.appium.java_client.AppiumDriver
 import io.appium.java_client.android.AndroidDriver
 import org.apache.logging.log4j.kotlin.Logging
-import org.openqa.selenium.By
-import org.openqa.selenium.TimeoutException
-import org.openqa.selenium.WebDriver
-import org.openqa.selenium.WebElement
+import org.openqa.selenium.*
+import org.openqa.selenium.NoSuchElementException
+import org.openqa.selenium.interactions.PointerInput
+import org.openqa.selenium.interactions.PointerInput.MouseButton.LEFT
+import org.openqa.selenium.interactions.PointerInput.Origin.viewport
+import org.openqa.selenium.interactions.Sequence
 import org.openqa.selenium.support.ui.ExpectedCondition
 import org.openqa.selenium.support.ui.ExpectedConditions
 import org.openqa.selenium.support.ui.WebDriverWait
 import java.time.Duration
+import java.time.Duration.ofMillis
+
 
 open class BaseActions(val driver:AndroidDriver?) : Logging {
 
@@ -115,5 +120,17 @@ open class BaseActions(val driver:AndroidDriver?) : Logging {
         }
         logger.info("Element disappeared and is now invisible")
         return true
+    }
+
+    object W3cActions : Logging {
+        private val FINGER = PointerInput(PointerInput.Kind.TOUCH, "finger")
+        fun doSwipe(driver: AppiumDriver, start: Point, end: Point, duration: Int) {
+            val swipe: Sequence = Sequence(FINGER, 1)
+                .addAction(FINGER.createPointerMove(ofMillis(0), viewport(), start.getX(), start.getY()))
+                .addAction(FINGER.createPointerDown(LEFT.asArg()))
+                .addAction(FINGER.createPointerMove(ofMillis(duration.toLong()), viewport(), end.getX(), end.getY()))
+                .addAction(FINGER.createPointerUp(LEFT.asArg()))
+            driver.perform(listOf(swipe))
+        }
     }
 }
