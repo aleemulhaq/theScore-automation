@@ -113,13 +113,13 @@ The approach was based around a Fans/Users first strategy, where I thought about
 Verifying the data itself on the UI level was challenging. Especially since, without developer or android root level access, I was unlikely to read any API calls on the mobile app.
 I pondered over some ideas of using public apis that might provide sports stats and info, but there is no gaurantee that a 3rd party stats provider will match with theScore api info.
 
-Eventually I came across theScore website, although qute limited in functionality, the website shows Team page views, and team-stats pages.
-Having the website render this information meant, I can listen into the network traffic in the browser dev tools.
+Soon after it occured to me, theScore website, although quite limited in functionality, the website displays matches/games and team-stats pages.
+Having the website render this information meant that I can listen into the network traffic in the browser dev tools.
 After investigating further, I managed to discover some public theScore api endpoints. I used these endpoints to give me information about team names, standings, header texts etc.
 
-Although we can talk about calling the API in a UI test can bring some level of instability, the tests will continue to provide value until the api changes.
+Although we can talk about how calling the API in a UI test can introduce some level of instability, the tests will continue to provide value until the api changes.
  
-Kotlin data classes also provide a great way to map all that data using GSON to kotlin object. I cached those objects as well so I can quickly and reliable access any API data values, without slowing down or disrupting the UI test
+Kotlin data classes also provide a great way to map all that data using GSON to kotlin object. I cached those objects as well so I can quickly and reliably access any API data values, without slowing down or disrupting the UI test
 
 
 ## Coverage assessment of feature
@@ -152,12 +152,7 @@ The project solution can be expanded to cover more test scenarios:
 
 
 ## Known issues
+- I am using Appium 2.0 to block any Android system level pop ups. This is just a flag that we can disable as needed.
 - theScore Technical Issue popup can be unexpected. I have added an explicit condition to deal with this
 - Every 1 in 20 test runs, I notice Appium intermingling the values of web elements when scrolling. Could be a appium 2.0 related issue since its still in beta.
 - I tried to cover most error/exception handling cases I can think of, but its possible to run into some unexpected exceptions from driver misbehaving 
-
-
-## Fun things I learned
-- Kotlin is awesome and interesting. Did you know that 2 arrays with the same elements are equal in Kotlin, but 2 lists with the exact same elements is not? Kotlin does a reference comparison for Lists instead.
-- 
-- If you are interested, ask me about how I implemented scroll till end of the page reliably
