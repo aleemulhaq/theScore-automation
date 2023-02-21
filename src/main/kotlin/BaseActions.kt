@@ -75,8 +75,16 @@ open class BaseActions(val driver:AndroidDriver?) : Logging {
             logger.fatal(e.stackTrace)
             return emptyList()
         }
-        logger.info("Returning found elements list")
-        return elementList
+        logger.info("Returning the found elements list")
+        logger.info("Found elements list size: {${elementList.size}}")
+
+        val visibleElements : MutableList<WebElement> = mutableListOf()
+        elementList.forEach {
+            if (it.isDisplayed) {
+                visibleElements.add(it)
+            }
+        }
+        return visibleElements
     }
 
     fun clickElement(locator: By): Boolean {
