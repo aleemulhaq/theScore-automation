@@ -57,19 +57,29 @@ e.g:
 
 
 ## Automation Framework Structure
-#### page object model,
-#### capabilities and variable driver (android + ios)
-#### rigid tests, only need to update page models if ui changes or for ios
-#### abstract classes
-#### logger
-#### multiple device? variable device? hardware device?
+The automation framework is built open the following underlying structure
+
+![Framework](./resources/framework.png)
+
+- The entry point of the application is **Base Test** class
+- All setup utilities are initialized from the Base Test class
+- All utilities are destructed in the Base Test class at the end of test execution
+- **Test** classes inherit from Base Test class. This allows us to keep tests generic enough where we can support ios in the future with minimal changes. We can overwrite the driver options/capabilities according to the mobile OS, in test classes
+- **Api Request maker** and **Data classes** work together to make efficient API class and cache results in the instance of data classes
+- Kotlin data classes are great, already come equipped with equals() and toString() implementations, to make us write fast and easy to read and understand code. 
+- Data classes are also unbothered by field order, giving us confidence in our tests' stability even when using dynamic API data
+- Having **Page Object** classes also gives us the advantage of separating test and page object logic, making it easier to scale the testing framework without introducing fragility
+- All Page Object classes are derived from a **Base Actions** class
+- **Base Actions** class deals with all the appium api related to performing actions on the mobile UI. E.g scroll and find element until end of page. (Fun one to solve :D )
+- **Logger** is extended to all classes, objects, companion objects to allow for specific, object context level logging
+- The framework is designed to maintain uniform principles around abstraction, DRY, and functional ideas. Allowing us to build and scale cleanly and efficiently
 
 ## Test implementation
 #### Launch app and go through onboarding to Favorites page
 - Install theScore apk on an Android device and Launch app
 - Navigate through **Onboarding** to get to the **Favorites** page
 
-#### Get team profle data from theScore api
+#### Get team profile data from theScore api
 - Make a HTTP request to theScore api and grab the current team's profile api response. (Note, we are using JUNIT parameterized approach and will test several teams from different sports.)
 - Parse the team profile api response and extract team full name, and team-stats from all possible seasons in the API Endpoint. (This is especially important because some soccer teams have multiple season stats and we scroll and verify through all that data)
 
@@ -143,4 +153,10 @@ The project solution can be expanded to cover more test scenarios:
 ## Known issues
 - theScore Technical Issue popup can be unexpected. I have added an explicit condition to deal with this
 - Every 1 in 20 test runs, I notice Appium intermingling the values of web elements when scrolling. Could be a appium 2.0 related issue since its still in beta.
-- I tried to cover most error/exception handling cases I can think of, but its possbile to run into some unexpected exceptions from driver misbehaving 
+- I tried to cover most error/exception handling cases I can think of, but its possible to run into some unexpected exceptions from driver misbehaving 
+
+
+## Fun things I learned
+- Kotlin is awesome and interesting. Did you know that 2 arrays with the same elements are equal in Kotlin, but 2 lists with the exact same elements is not? Kotlin does a reference comparison for Lists instead.
+- 
+- If you are interested, ask me about how I implemented scroll till end of the page reliably
