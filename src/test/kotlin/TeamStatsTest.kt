@@ -42,8 +42,8 @@ class TeamStatsTest: BaseTestSetup() {
         assertTrue(subTabBar.tapStatsTab(), "Failed to tap on Stats tab")
 
         // verify stats tab content
-        assertTrue(team.verifyStatSubHeaderDisplayed(teamData.getTeamStatsSubHeaderText()),"Failed while scroll to verify team-stats data")
-        assertTrue(team.verifyStatSubHeaderValueDisplayed(teamData.getTeamStatsSubHeaderValue()),"Failed while scroll to verify team-stats data")
+        assertTrue(team.verifyStatSubHeaderDisplayed(teamData.getTeamStatsSubHeaderText()),"Failed to verify stats sub header")
+        assertTrue(team.verifyStatSubHeaderValueDisplayed(teamData.getTeamStatsSubHeaderValue()),"Failed to verify stats sub header values")
         assertTrue(subTabBar.verifyStatsTabSelected(), "Failed to verify Stats tab selected")
         assertTrue(team.scrollAndVerifyTeamStats(teamData.getSetOfStatsList()),"Failed while scroll to verify team-stats data")
         assertTrue(topNavBar.tapBackButton(),"Failed to tap on Back button")

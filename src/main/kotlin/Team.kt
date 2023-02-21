@@ -6,7 +6,7 @@ import java.util.*
 import kotlin.math.min
 
 class Team(driver: AndroidDriver?) : BaseActions(driver) {
-
+    // element raw identifiers
     private val teamHeader = "team_name"
     private val statTitle = "text_category_name"
     private val statValue = "text_value"
