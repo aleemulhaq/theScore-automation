@@ -7,7 +7,7 @@ import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.ValueSource
 
     @DisplayName("Pass the method parameters provided by the @ValueSource annotation")
-class TeamTest: BaseTestSetup() {
+class TeamStatsTest: BaseTestSetup() {
     @BeforeAll
     fun navigateThroughOnboarding(){
         val onboarding = Onboarding(driver)
@@ -36,7 +36,7 @@ class TeamTest: BaseTestSetup() {
         assertEquals(teamSearchName, teamPageName)
         assertTrue(team.tapStatsTab())
         assertTrue(team.verifyStatsTabSelected())
-        assertTrue(team.verifyStatsBodyDisplayed(teamDataClass.getSetOfStatsList()))
+        assertTrue(team.verifyStatsCorrectlyDisplayed(teamDataClass.getSetOfStatsList()))
         assertTrue(topNavBar.tapBackButton())
         assertEquals(teamSearchName, searchView.getSearchBarText())
     }

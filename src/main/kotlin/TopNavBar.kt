@@ -8,10 +8,12 @@ class TopNavBar(driver: AndroidDriver?) : BaseActions(driver) {
     private val backButton = "Navigate up"
 
     fun tapSearchBar(): Boolean {
+        logger.info("Clicking on search bar")
         return clickElement(AppiumBy.id(searchBar))
     }
 
     fun tapBackButton(): Boolean {
+        logger.info("Clicking on Back button")
         return clickElement(AppiumBy.accessibilityId(backButton))
     }
 }

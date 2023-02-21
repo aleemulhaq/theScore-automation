@@ -10,14 +10,17 @@ class Team(driver: AndroidDriver?) : BaseActions(driver) {
     private val statRank = "text_formatted_rank"
 
     fun getHeaderText(): String {
+        logger.info("Getting text of team header")
         return getElementText(AppiumBy.id(teamHeader))
     }
 
     fun tapStatsTab(): Boolean {
+        logger.info("Tapping team stats tab")
         return clickElement(AppiumBy.accessibilityId(statsTab))
     }
 
     fun verifyStatsTabSelected(): Boolean {
+        logger.info("Verifying team stats tab is selected")
         return isElementSelected(AppiumBy.accessibilityId(statsTab))
     }
 
@@ -33,7 +36,8 @@ class Team(driver: AndroidDriver?) : BaseActions(driver) {
         }
     }
 
-    fun verifyStatsBodyDisplayed(apiStatsSet : Set<TeamDataClasses.Stats>): Boolean {
+    fun verifyStatsCorrectlyDisplayed(apiStatsSet : Set<TeamDataClasses.Stats>): Boolean {
+        logger.info("Verifying team stats are correctly displayed")
         val listOfStatTitles = findListOfElement(AppiumBy.id(statTitle))
         val listOfStatValues = findListOfElement(AppiumBy.id(statValue))
         val listOfStatRanks = findListOfElement(AppiumBy.id(statRank))
@@ -45,9 +49,11 @@ class Team(driver: AndroidDriver?) : BaseActions(driver) {
                 removeParenthesis((getElementText(listOfStatRanks[i])))
             )
             if (!apiStatsSet.contains(stat)) {
+                logger.error("Stat: {$stat} does not match with any stat from theScore API data")
                 return false
             }
         }
+        logger.info("All team stats are displayed correctly and match with theScore API data")
         return true
     }
 }

@@ -12,10 +12,12 @@ class Onboarding(driver: AndroidDriver?) : BaseActions(driver) {
 
 
     fun clickOnboardingNext(): Boolean {
+        logger.info("Click on onboarding next button")
         return clickElement(AppiumBy.id(primaryNextButton))
     }
 
     fun clickOnboardingSportItemName(): Boolean {
+        logger.info("Click on onboarding sport item/chip")
         return clickElement(AppiumBy.id(sportItemName))
     }
 }
