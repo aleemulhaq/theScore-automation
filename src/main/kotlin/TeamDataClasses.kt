@@ -1,17 +1,20 @@
 import com.google.gson.Gson
+import org.apache.logging.log4j.kotlin.Logging
 
-class TeamDataClasses (apiUrl: String){
-    
+class TeamDataClasses (apiUrl: String) : Logging {
+
     private val teamProfileRes = makeApiRequest(apiUrl)
 
     // init obj here so it is cached in class instance
     private val teamProfileObj: TeamProfile = Gson().fromJson(teamProfileRes, TeamProfile::class.java)
 
     fun getApiTeamProfile(): String {
+        logger.info("Getting team's FULL NAME from theScore API")
         return teamProfileObj.team.full_name
     }
 
     private fun getStatsList(): List<Stats> {
+        logger.info("Getting team-stats from theScore API")
         var allStatsList = mutableListOf<Stats>()
         val iterator = teamProfileObj.leagues_team_stats[0].seasons_team_stats[0].stats_groups.iterator()
         iterator.forEach {

@@ -8,10 +8,12 @@ class PopupModals(driver: AndroidDriver?) : BaseActions(driver) {
 
 
     fun dismissPopupModal(): Boolean {
+        logger.info("Dismissing pop up modal")
         return clickElement(AppiumBy.id(closeModalIcon))
     }
 
     fun waitForSplashScreenEnd(): Boolean {
+        logger.info("Waiting for splash screen to disappear")
         return isElementInvisible(AppiumBy.id(splashScreen))
     }
 }
