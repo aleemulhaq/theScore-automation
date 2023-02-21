@@ -24,18 +24,27 @@ class TeamStatsTest: BaseTestSetup() {
     @DisplayName("Navigates to and verifies the data displayed on a Team's stats page")
     @ValueSource(strings = [SOCCER_TEAM_API_URL, BASKETBALL_TEAM_API_URL, HOCKEY_TEAM_API_URL, FOOTBALL_TEAM_API_URL])
     fun `verify team stats displayed`(apiUrl : String) {
+        // search for team
         val topNavBar = TopNavBar(driver)
         assertTrue(topNavBar.tapSearchBar(), "Failed to tap on search bar")
         val teamData = TeamDataClasses(apiUrl)
         val teamSearchName = teamData.getApiTeamProfile()
         val searchView = SearchView(driver)
         assertTrue(searchView.sendKeysSearchBar(teamSearchName), "Unable to enter search text")
+        val subTabBar = SubTabBar(driver)
+        assertTrue(subTabBar.tapTeamsTab(), "Failed to tap on Teams tab")
+
+        // team on team search result and verify team page opens
         assertTrue(searchView.tapSearchResult(), "Failed to tap on search result")
         val team = Team(driver)
         val teamPageName = team.getHeaderText()
         assertEquals(teamSearchName, teamPageName, "Searched team's name and team-page header text is different")
-        assertTrue(team.tapStatsTab(), "Failed to tap on Stats tab")
-        assertTrue(team.verifyStatsTabSelected(), "Failed to verify Stats tab selected")
+        assertTrue(subTabBar.tapStatsTab(), "Failed to tap on Stats tab")
+
+        // verify stats tab content
+        assertTrue(team.verifyStatSubHeaderDisplayed(teamData.getTeamStatsSubHeaderText()),"Failed while scroll to verify team-stats data")
+        assertTrue(team.verifyStatSubHeaderValueDisplayed(teamData.getTeamStatsSubHeaderValue()),"Failed while scroll to verify team-stats data")
+        assertTrue(subTabBar.verifyStatsTabSelected(), "Failed to verify Stats tab selected")
         assertTrue(team.scrollAndVerifyTeamStats(teamData.getSetOfStatsList()),"Failed while scroll to verify team-stats data")
         assertTrue(topNavBar.tapBackButton(),"Failed to tap on Back button")
         assertEquals(teamSearchName, searchView.getSearchBarText(),"Search bar does not show text of previous search")

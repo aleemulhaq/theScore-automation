@@ -16,11 +16,6 @@ class TeamDataClasses (apiUrl: String) : Logging {
     private fun getStatsList(): List<Stats> {
         logger.info("Getting team-stats from theScore API")
         var allStatsList = mutableListOf<Stats>()
-//        val iterator = teamProfileObj.leagues_team_stats[0].seasons_team_stats[0].stats_groups.iterator()
-//        iterator.forEach {
-//            allStatsList = (allStatsList + it.stats) as MutableList<Stats>
-//        }
-
 
         val iterator = teamProfileObj.leagues_team_stats.iterator()
         iterator.forEach {
@@ -43,6 +38,15 @@ class TeamDataClasses (apiUrl: String) : Logging {
         return getStatsList().toSet()
     }
 
+    // "STATS", "RANK" etc
+    fun getTeamStatsSubHeaderText() : String {
+        return teamProfileObj.leagues_team_stats[0].seasons_team_stats[0].stats_groups[0].name
+    }
+
+    fun getTeamStatsSubHeaderValue() : String {
+        return teamProfileObj.leagues_team_stats[0].seasons_team_stats[0].stats_groups[0].value_name
+    }
+
     data class TeamProfile(
         val team: TeamInfo,
         val leagues_team_stats: List<TeamLeagueStats>
@@ -61,6 +65,8 @@ class TeamDataClasses (apiUrl: String) : Logging {
     )
 
     data class StatGroups(
+        val name: String,
+        val value_name: String,
         val stats: List<Stats>
     )
 
