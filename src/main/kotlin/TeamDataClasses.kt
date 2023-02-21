@@ -13,6 +13,7 @@ class TeamDataClasses (apiUrl: String) : Logging {
         return teamProfileObj.team.full_name
     }
 
+    // lots of nested legaues with seasons over the years that still show stats on theScore app
     private fun getStatsList(): List<Stats> {
         logger.info("Getting team-stats from theScore API")
         var allStatsList = mutableListOf<Stats>()
@@ -34,6 +35,7 @@ class TeamDataClasses (apiUrl: String) : Logging {
         return allStatsList
     }
 
+    // for easy O(1) constant time item access
     fun getSetOfStatsList(): Set<Stats> {
         return getStatsList().toSet()
     }

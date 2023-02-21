@@ -3,6 +3,8 @@ import java.net.http.HttpClient
 import java.net.http.HttpRequest
 import java.net.http.HttpResponse
 
+// make api requests to theScore's api, to get team profile data, and we can verify that against the UI
+// to see if UI displays data correctly
 fun makeApiRequest(apiUrl: String): String {
     //    Make request to theScore's api
     val client = HttpClient.newBuilder().build();

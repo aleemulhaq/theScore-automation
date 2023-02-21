@@ -20,7 +20,7 @@ fun setUpLogging() {
 
     // create a file appender
     val file = builder.newAppender("log", "File")
-    file.addAttribute("fileName", "logs/test_run_${LocalDateTime.now()}.log")
+    file.addAttribute("fileName", "logs/test_run__${LocalDateTime.now()}.log")
     file.add(
         builder.newLayout("PatternLayout")
             .addAttribute("pattern", "%d %p %c [%t] %m%n")

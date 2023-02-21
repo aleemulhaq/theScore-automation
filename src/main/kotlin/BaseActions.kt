@@ -2,7 +2,6 @@ import io.appium.java_client.AppiumDriver
 import io.appium.java_client.android.AndroidDriver
 import org.apache.logging.log4j.kotlin.Logging
 import org.openqa.selenium.*
-import org.openqa.selenium.NoSuchElementException
 import org.openqa.selenium.interactions.PointerInput
 import org.openqa.selenium.interactions.PointerInput.MouseButton.LEFT
 import org.openqa.selenium.interactions.PointerInput.Origin.viewport
@@ -23,6 +22,7 @@ open class BaseActions(val driver:AndroidDriver?) : Logging {
     }
 
     fun getElementText(locator: By): String {
+        logger.info("Getting element text")
         val element = findElement(locator)
         return getElementText(element)
     }
@@ -91,8 +91,6 @@ open class BaseActions(val driver:AndroidDriver?) : Logging {
         logger.info("Waiting for element to be clickable and then click")
         try {
             waitForExpectedCondition(10, ExpectedConditions.elementToBeClickable(locator)).click()
-        } catch (e : NoSuchElementException) {
-            return false
         } catch (e : TimeoutException) {
             logger.fatal("Timed out while waiting to for element to be clickable")
             logger.fatal(e.stackTrace)
@@ -130,6 +128,7 @@ open class BaseActions(val driver:AndroidDriver?) : Logging {
         return true
     }
 
+    // object allows self level logging too
     object W3cActions : Logging {
         private val FINGER = PointerInput(PointerInput.Kind.TOUCH, "finger")
         fun doSwipe(driver: AppiumDriver, start: Point, end: Point, duration: Int) {
@@ -138,6 +137,7 @@ open class BaseActions(val driver:AndroidDriver?) : Logging {
                 .addAction(FINGER.createPointerDown(LEFT.asArg()))
                 .addAction(FINGER.createPointerMove(ofMillis(duration.toLong()), viewport(), end.getX(), end.getY()))
                 .addAction(FINGER.createPointerUp(LEFT.asArg()))
+            logger.info("Attempting to execute swipe W3c action")
             driver.perform(listOf(swipe))
         }
     }
