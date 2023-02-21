@@ -39,19 +39,19 @@ Currently we are able to run the project against two kinds of devices:
 - If you want to run tests on a specific hardware device, please make sure it is the only hardware Android device plugged in to the computer.
 
 #### Android Emulators
-- Only support Pixel_6_API_33 specifically at the moment. This is done on purpose so we always have an emulator back up option that boots up.
-- Make sure you have Pixel_6_API_33 virtual device downloaded through Android sdk tools or Android studio device manager
+- Only support **Pixel_6_API_33** specifically at the moment. This is done on purpose so we always have an emulator back up option that boots up.
+- Make sure you have **Pixel_6_API_33** virtual device downloaded through Android sdk tools or Android studio device manager
 ##### Note about connected devices:
-- The only virtual device that will run the tests is "Pixel_6_API_33", make sure the AVD name matches that
+- The only virtual device that will run the tests is **Pixel_6_API_33**, make sure the AVD name matches that
 - If a hardware device is connected, it will always be prioritized for testing
 
 
 
 ## Setup & Running tests
-To build the project and executes tests, you need to run the following command in the project path.
+To build the project and executes tests, you just need to run the following command in the project path.
 e.g:
 - Set file path to access my project directory `cd.../../user/../../theScore-automation`,
-- then run `gradlew clean test`
+- then run `gradlew clean test`   (run clean, and build test tasks)
 - After each successful test run, the sessions logs are saved in the `projDir/logs/` directory
 
 ## Test implementation
@@ -84,10 +84,58 @@ e.g:
 
 
 ## Rationale behind test approach
-todo
+The approach was based around a Fans/Users first strategy, where I thought about the problem statement in the context of a regular user of theScore app. A regular user expects a user-friendly interface, with ability to quickly and reliably get access to the sports information they seek. In such case, I thought about a common user pattern where they might install the app, go through onboarding, search for a team and view the team stats.
 
-## coverage assessment of feature
-todo
+ A team-stats page is data intensive, and has high impact to many sports users. Due to such, we have to verify the data displayed on the mobile UI is exactly as expected. This is usually a trivial testing paradigm in backend development, where we can quickly unit-test the api and data.
+ But we also regularly see UI bugs that show data incorrectly, even when the API is healthy.
+
+Verifying the data itself on the UI level was challenging. Especially since, without developer or android root level access, I was unlikely to read any API calls.
+I thought about some public apis that might provide sports stats and info, but there is no gaurantee that that provider will match with theScore api info.
+
+Eventually I came across theScore website, although qute limited in functionality, the website shows Team page views, and team-stats pages.
+Having the website render this information meant, I can listen into the network traffic in the browser dev tools.
+After investigating further, I managed to discover some public theScore api endpoints. I used these endpoints to give me information about team names, standings, header texts etc.
+
+Although we can talk about calling the API in a UI test can bring some level of instability, the tests will continue to provide value until the api changes.
+ 
+Kotlin data classes also provide a great way to map all that data using GSON to kotlin object. I cached those objects as well so I can quickly and reliable access any API data values, without slowing down or disrupting the UI test
+
+
+## Coverage assessment of feature
+Although this particular test navigates through onboarding and search to the team page, the objective of the test is to verify the team stats
+
+The tests focus on the following requirements:
+1) Teams that have a team-stats, shows stats tab on team page
+2) Checks team api data and UI team name, UI data values are correct
+3) Back navigation works
+
+#### Further test scenarios
+However, I just covered one way of getting to a teams page.
+
+The project solution can be expanded to cover more test scenarios:
+- User logs in, then navigates to team page
+- Already logged in user navigates to team page
+- Search for a team
+- Clicking on a team chip or team element in (leagues, matches, favorites, standings pages etc.)
+- Test for a team that does not have stats, and is expected not to show stats tab
+- Open team page from mobile app widgets
+
+#### Improvements, upgrades, todos
+- Failure image screenshot for each any test failures. Very helpful in debugging
+- Abstract the appium driver logic out of test classes, so that we can add IOS to the project as well, without having to write any new setup code
+- Project directory structure, better approach to how to design classes, and where to use functional code instead of better performance
+- Github actions, static analysis tools. Appium testing on remote devices/farms
+- Explore more of the new Appium 2.0 API. Promising image/visual automation
+- Add http listener to listen to logs on remote port, send logs to cloud platforms
+- More debugging tools ADB library instead of shell command relying on an active process
+
+
+
+
+
+## Known issues
+
+
 
 
 ## automation framework structure
