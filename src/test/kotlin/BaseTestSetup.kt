@@ -12,7 +12,6 @@ import java.io.IOException
 import java.io.InputStreamReader
 import java.net.URL
 
-
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 open class BaseTestSetup : Logging {
     protected var driver: AndroidDriver? = null
@@ -30,8 +29,11 @@ open class BaseTestSetup : Logging {
             logger.info("Appium Driver capabilities: {${driver?.capabilities}")
             val popupModals = PopupModals(driver)
             assertTrue(popupModals.waitForSplashScreenEnd())
-        } catch (e: Exception) {
-            logger.fatal("Exception thrown while initializing appium service and driver")
+        } catch (e: IllegalArgumentException) {
+            logger.fatal("Exception thrown while initializing appium service {$service.isRunning} and driver {$driver}")
+        }
+        catch (e: NullPointerException) {
+            logger.fatal("Null pointer exception thrown while initializing appium service {$service.isRunning} and driver {$driver}")
         }
     }
 
@@ -62,14 +64,11 @@ open class BaseTestSetup : Logging {
             .setApp(appPath)
             .setAutoGrantPermissions(true)
 
-        if (firstAndroidAdbDeviceID == "" || firstAndroidAdbDeviceID == null) {
-            options.setAvd("Pixel_6_API_33") // default to pixel 6 if adb devices list failed
-        }
-        else if (firstAndroidAdbDeviceID!!.contains("emulator")) {
-            options.setUdid(firstAndroidAdbDeviceID) // if it is some other emulator
+        if (!firstAndroidAdbDeviceID!!.contains("emulator") && (firstAndroidAdbDeviceID != null && firstAndroidAdbDeviceID != "")) {
+            options.setUdid(firstAndroidAdbDeviceID) // then it is a hardware device
         }
         else{
-            options.setUdid(firstAndroidAdbDeviceID) // else, its a hardware device
+            options.setAvd("Pixel_6_API_33") // default to pixel 6 if adb devices list failed to retrieve hardware device
         }
 
         val serviceUrl = "http://127.0.0.1:4723"
@@ -77,6 +76,7 @@ open class BaseTestSetup : Logging {
         return AndroidDriver( URL(serviceUrl), options)
     }
 
+    // run adb command and parse result to get a list of devices
     private fun getListOfConnectedAndroidDevices() {
         val cmd = "\$ANDROID_HOME/platform-tools/adb devices -l"
         val processBuilder = ProcessBuilder()
@@ -89,22 +89,26 @@ open class BaseTestSetup : Logging {
             output.append(line)
             val exitVal = process.waitFor()
             if (exitVal == 0) {
-                logger.info("Successfully grabbed list of devices")
                 var deviceIds = output.lines()?.mapNotNull {
                     val matches = """^([a-zA-Z0-9\-]+)(\s+)(device)""".toRegex().find(it)
                     matches?.groupValues?.get(1)
                 }
                 if (deviceIds != null) {
+                    logger.info("Successfully grabbed list of devices: {$deviceIds}")
+                    logger.info("Returning first available device id: {$deviceIds[0]}")
                     firstAndroidAdbDeviceID = deviceIds[0]
                 }
-//                exitProcess(0)
             } else {
-                logger.fatal("Command line process to fetch adb device list, failed to exit 0.")
+                logger.fatal("Commandline process to fetch adb device list failed to terminate!")
             }
         } catch (e: IOException) {
+            logger.fatal("Commandline process to fetch adb device list failed when reading process stream: {$e.printStackTrace()}")
             e.printStackTrace()
         } catch (e: InterruptedException) {
-            e.printStackTrace()
+            logger.fatal("Commandline process to fetch adb device list failed. Process was interrupted. {$e.printStackTrace()}")
+        }
+        catch (e: IllegalArgumentException) {
+            logger.fatal("Commandline process to fetch adb device list failed. Process was interrupted. {$e.printStackTrace()}")
         }
     }
 }
