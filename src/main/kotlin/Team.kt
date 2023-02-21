@@ -39,7 +39,7 @@ class Team(driver: AndroidDriver?) : BaseActions(driver) {
         }
     }
 
-    fun scrollTeamStats(apiStatsSet : Set<TeamDataClasses.Stats>): Boolean {
+    fun scrollAndVerifyTeamStats(apiStatsSet : Set<TeamDataClasses.Stats>): Boolean {
         val dimension = driver!!.manage().window().size
         val start = Point((dimension.width * 0.5).toInt(), (dimension.height * 0.8).toInt())
         val end = Point((dimension.width * 0.5).toInt(), (dimension.height * 0.2).toInt())
@@ -76,7 +76,8 @@ class Team(driver: AndroidDriver?) : BaseActions(driver) {
                 doSwipe(driver, start, end, 1000) //with duration 1s
                 Thread.sleep(3000)
             }
-            logger.info("Verifying all UI team stats match stats from theScore API")
+            logger.info("Swiped down {$swipeNumber} times to reach end of team-stats page")
+            logger.info("Verified all UI team stats match stats from theScore API")
             return true
         }
         catch (e:IndexOutOfBoundsException) {
