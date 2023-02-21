@@ -13,9 +13,11 @@ dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib"
     implementation "io.appium:java-client:8.3.0"
     implementation "org.seleniumhq.selenium:selenium-java:4.8.0"
+    implementation 'com.google.code.gson:gson:2.10.1'
+    implementation "org.junit.jupiter:junit-jupiter-params:5.6.0"
+
     testImplementation "org.junit.jupiter:junit-jupiter-api:5.3.1"
     testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:5.3.1"
-    implementation 'com.google.code.gson:gson:2.10.1'
 }
 
 test {
