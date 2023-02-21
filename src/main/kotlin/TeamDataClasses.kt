@@ -1,14 +1,8 @@
 import com.google.gson.Gson
 
-class TeamDataClasses() {
+class TeamDataClasses {
 
-//    loop through collection
-//    val it = testModel.leagues_team_stats[0].seasons_team_stats[0].stats_groups[0].stats.iterator()
-//    while (it.hasNext()) {
-//        println("stat_object = " + it.next())
-//    }
-
-    private val teamProfileRes = makeApiRequest("https://api.thescore.com/basketball/teams/1/profile")
+    private val teamProfileRes = makeApiRequest("https://api.thescore.com/soccer/teams/62/profile")
 
     private val teamProfileObj: TeamProfile = Gson().fromJson(teamProfileRes, TeamProfile::class.java)
 
@@ -16,7 +10,7 @@ class TeamDataClasses() {
         return teamProfileObj.team.full_name
     }
 
-    private fun getStatsList(): List<Stats> {
+    fun getStatsList(): List<Stats> {
         return teamProfileObj.leagues_team_stats[0].seasons_team_stats[0].stats_groups[0].stats
     }
 

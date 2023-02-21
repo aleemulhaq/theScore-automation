@@ -17,11 +17,13 @@ class TeamTest: BaseTestSetup() {
         assertTrue(popupModals.dismissPopupModal())
     }
     
-    @Test()
+    @Test
     fun navigateToTeamStats() {
         val topNavBar = TopNavBar(driver)
         assertTrue(topNavBar.tapSearchBar())
-        val teamSearchName = "Boston Celtics"
+        val teamDataClass = TeamDataClasses()
+        val teamSearchName = teamDataClass.getApiTeamProfile()
+//        val teamSearchName = "Boston Celtics"
         val searchView = SearchView(driver)
         assertTrue(searchView.sendKeysSearchBar(teamSearchName))
         assertTrue(searchView.tapSearchResult())
@@ -30,15 +32,15 @@ class TeamTest: BaseTestSetup() {
         assertEquals(teamSearchName, teamPageName)
         assertTrue(team.tapStatsTab())
         assertTrue(team.verifyStatsTabSelected())
-        assertTrue(team.verifyStatsBodyDisplayed())
+        assertTrue(team.verifyStatsBodyDisplayed(teamDataClass))
         assertTrue(topNavBar.tapBackButton())
         assertEquals(teamSearchName, searchView.getSearchBarText())
     }
 
-    @Test
-    fun `caveat of using var`() {
-    assertTrue(true)
-    }
+//    @Test
+//    fun `caveat of using var`() {
+//    assertTrue(true)
+//    }
 
     @AfterEach
     fun navigateBackToHomePage() {
