@@ -26,8 +26,8 @@ class TeamStatsTest: BaseTestSetup() {
     fun `verify team stats displayed`(apiUrl : String) {
         val topNavBar = TopNavBar(driver)
         assertTrue(topNavBar.tapSearchBar())
-        val teamDataClass = TeamDataClasses(apiUrl)
-        val teamSearchName = teamDataClass.getApiTeamProfile()
+        val teamData = TeamDataClasses(apiUrl)
+        val teamSearchName = teamData.getApiTeamProfile()
         val searchView = SearchView(driver)
         assertTrue(searchView.sendKeysSearchBar(teamSearchName))
         assertTrue(searchView.tapSearchResult())
@@ -36,7 +36,10 @@ class TeamStatsTest: BaseTestSetup() {
         assertEquals(teamSearchName, teamPageName)
         assertTrue(team.tapStatsTab())
         assertTrue(team.verifyStatsTabSelected())
-        assertTrue(team.verifyStatsCorrectlyDisplayed(teamDataClass.getSetOfStatsList()))
+//        assertTrue(team.verifyStatsCorrectlyDisplayed(teamDataClass.getSetOfStatsList()))
+//        team.w3cScrollDown()
+//        assertTrue(team.verifyStatsCorrectlyDisplayed(teamDataClass.getSetOfStatsList()))
+        assertTrue(team.scrollTeamStats(teamData.getSetOfStatsList()))
         assertTrue(topNavBar.tapBackButton())
         assertEquals(teamSearchName, searchView.getSearchBarText())
     }

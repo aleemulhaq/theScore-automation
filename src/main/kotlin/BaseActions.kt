@@ -1,10 +1,8 @@
-import BaseActions.W3cActions.doSwipe
 import io.appium.java_client.AppiumDriver
 import io.appium.java_client.android.AndroidDriver
 import org.apache.logging.log4j.kotlin.Logging
 import org.openqa.selenium.*
 import org.openqa.selenium.NoSuchElementException
-import org.openqa.selenium.interactions.Pause
 import org.openqa.selenium.interactions.PointerInput
 import org.openqa.selenium.interactions.PointerInput.MouseButton.LEFT
 import org.openqa.selenium.interactions.PointerInput.Origin.viewport
@@ -14,7 +12,6 @@ import org.openqa.selenium.support.ui.ExpectedConditions
 import org.openqa.selenium.support.ui.WebDriverWait
 import java.time.Duration
 import java.time.Duration.ofMillis
-import java.util.*
 
 
 open class BaseActions(val driver:AndroidDriver?) : Logging {
@@ -125,28 +122,7 @@ open class BaseActions(val driver:AndroidDriver?) : Logging {
         return true
     }
 
-    fun w3cTap(element : WebElement) {
-        val dimension: Dimension = driver!!.manage().window().size
-        val forTap = Point((dimension.width * 0.5) as Int, (dimension.height * 0.9) as Int)
-        W3cActions.doTap(driver, forTap, 200) //with duration 200ms
-    }
-
-    fun w3cScroll() {
-        val dimension = driver!!.manage().window().size
-        var start = Point((dimension.width * 0.5).toInt(), (dimension.height * 0.9).toInt())
-        var end = Point((dimension.width * 0.2).toInt(), (dimension.height * 0.1).toInt())
-        doSwipe(driver!!, start!!, end!!, 1000) //with duration 1s
-
-
-        Thread.sleep(3000)
-
-        start = Point((dimension.width * 0.2).toInt(), (dimension.height * 0.2).toInt())
-        end = Point((dimension.width * 0.5).toInt(), (dimension.height * 0.8).toInt())
-        doSwipe(driver!!, start, end, 1000) //with duration 1s
-
-    }
-
-    object W3cActions {
+    object W3cActions : Logging {
         private val FINGER = PointerInput(PointerInput.Kind.TOUCH, "finger")
         fun doSwipe(driver: AppiumDriver, start: Point, end: Point, duration: Int) {
             val swipe: Sequence = Sequence(FINGER, 1)
@@ -154,24 +130,7 @@ open class BaseActions(val driver:AndroidDriver?) : Logging {
                 .addAction(FINGER.createPointerDown(LEFT.asArg()))
                 .addAction(FINGER.createPointerMove(ofMillis(duration.toLong()), viewport(), end.getX(), end.getY()))
                 .addAction(FINGER.createPointerUp(LEFT.asArg()))
-            driver.perform(Arrays.asList(swipe))
+            driver.perform(listOf(swipe))
         }
-
-        fun doTap(driver: AppiumDriver, point: Point, duration: Int) {
-            val tap: Sequence = Sequence(FINGER, 1)
-                .addAction(FINGER.createPointerMove(ofMillis(0), viewport(), point.getX(), point.getY()))
-                .addAction(FINGER.createPointerDown(LEFT.asArg()))
-                .addAction(Pause(FINGER, ofMillis(duration.toLong())))
-                .addAction(FINGER.createPointerUp(LEFT.asArg()))
-            driver.perform(Arrays.asList(tap))
-        }
-    }
-
-
-    fun t(source : WebElement, target: WebElement) {
-        val source: Point = source.location
-        val target: Point = target.location
-        val finger = PointerInput(PointerInput.Kind.TOUCH, "finger")
-        val dragNDrop = org.openqa.selenium.interactions.Sequence(finger, 1)
     }
 }

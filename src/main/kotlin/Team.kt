@@ -1,5 +1,8 @@
+import BaseActions.W3cActions.doSwipe
 import io.appium.java_client.AppiumBy
 import io.appium.java_client.android.AndroidDriver
+import org.openqa.selenium.Point
+import kotlin.math.min
 
 class Team(driver: AndroidDriver?) : BaseActions(driver) {
 
@@ -36,24 +39,49 @@ class Team(driver: AndroidDriver?) : BaseActions(driver) {
         }
     }
 
-    fun verifyStatsCorrectlyDisplayed(apiStatsSet : Set<TeamDataClasses.Stats>): Boolean {
-        logger.info("Verifying team stats are correctly displayed")
-        val listOfStatTitles = findListOfElement(AppiumBy.id(statTitle))
-        val listOfStatValues = findListOfElement(AppiumBy.id(statValue))
-        val listOfStatRanks = findListOfElement(AppiumBy.id(statRank))
+    fun scrollTeamStats(apiStatsSet : Set<TeamDataClasses.Stats>): Boolean {
+        val dimension = driver!!.manage().window().size
+        val start = Point((dimension.width * 0.5).toInt(), (dimension.height * 0.8).toInt())
+        val end = Point((dimension.width * 0.5).toInt(), (dimension.height * 0.2).toInt())
 
-        for (i in listOfStatTitles.indices) {
-            val stat = TeamDataClasses.Stats(
-                getElementText(listOfStatTitles[i]),
-                getElementText(listOfStatValues[i]).toDouble(),
-                removeParenthesis((getElementText(listOfStatRanks[i])))
-            )
-            if (!apiStatsSet.contains(stat)) {
-                logger.error("Stat: {$stat} does not match with any stat from theScore API data")
-                return false
+        logger.info("Verifying team stats are correctly displayed")
+
+        val teamStatsSet : MutableSet<TeamDataClasses.Stats> = mutableSetOf() // start with empty set
+        var swipeNumber = 0         // track swipe numbers to have upper limit of 4 swipes max
+        try {
+            while(swipeNumber < 5) {
+                val teamStatSetSize = teamStatsSet.size
+                val listOfStatTitles = findListOfElement(AppiumBy.id(statTitle))
+                val listOfStatValues = findListOfElement(AppiumBy.id(statValue))
+                val listOfStatRanks = findListOfElement(AppiumBy.id(statRank))
+                val minLen = min(listOfStatTitles.size,min(listOfStatValues.size, listOfStatRanks.size))
+
+                for (i in 0 until minLen) {
+                    val stat = TeamDataClasses.Stats(
+                        getElementText(listOfStatTitles[i]),
+                        getElementText(listOfStatValues[i]).toDouble(),
+                        removeParenthesis((getElementText(listOfStatRanks[i])))
+                    )
+                    teamStatsSet.add(stat)
+                    if (!apiStatsSet.contains(stat)) {
+                        logger.error("Stat: {$stat} does not match with any stat from theScore API data")
+                        return false
+                    }
+                }
+                if (teamStatSetSize == teamStatsSet.size) {
+                    logger.info("Reached end of team-stats tab") ; break
+                }
+                swipeNumber += 1
+                logger.info("Performing swipe number {$swipeNumber}")
+                doSwipe(driver, start, end, 1000) //with duration 1s
+                Thread.sleep(3000)
             }
+            logger.info("Verifying all UI team stats match stats from theScore API")
+            return true
         }
-        logger.info("All team stats are displayed correctly and match with theScore API data")
-        return true
+        catch (e:IndexOutOfBoundsException) {
+            logger.fatal("Index out of bounds")
+            return false
+        }
     }
 }
