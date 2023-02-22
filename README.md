@@ -1,9 +1,9 @@
 # theScore QA Automation Challenge Feb 2023
 This repository hosts the project solution to theScore's QA Automation (Mobile) challenge.
 
-Author | Aleem ul Haq
---- | ---
-Date Completed| Feb 21, 2023
+| Author         | Aleem ul Haq |
+|----------------|--------------|
+| Date Completed | Feb 21, 2023 |
 
 
 ## Challenge requirements
@@ -39,7 +39,7 @@ Currently, we are able to run the project against two kinds of devices:
 - If you want to run tests on a specific hardware device, please make sure it is the only hardware Android device plugged in to the computer.
 
 #### Android Emulators
-- Only support **Pixel_6_API_33** specifically at the moment. This is done on purpose so we always have an emulator back up option that boots up.
+- Only support **Pixel_6_API_33** specifically at the moment. This is done on purpose so that we always have an emulator back up option that boots up.
 - Please have the **Pixel_6_API_33** virtual device downloaded through Android sdk tools or Android studio device manager
 #### Note about connected devices:
 - The only virtual device that will run the tests is **Pixel_6_API_33** and exactly with that AVD name
@@ -50,38 +50,36 @@ Currently, we are able to run the project against two kinds of devices:
 To build the project and execute tests, run the following command in the project path.
 e.g:
 - Set file path to access my project directory `cd.../../user/../../theScore-automation`,
-- then run `./gradlew clean test`   (run clean, and build test tasks)
+- Run `gradle build` or `./gradlew clean test` command in theScore-automation project root
 - After each successful test run, the sessions logs are saved in the `projDir/logs/` directory
-- Current directory does not have to be project dir to run the project
-
 
 
 ## Automation Framework Structure
 The automation framework is built open the following underlying structure
 
-![Framework](./resources/framework.png)
+![Framework](/resources/framework.png)
 
 - The entry point of the application is **Base Test** class
 - All setup utilities are initialized from the Base Test class
 - All utilities are destructed in the Base Test class at the end of test execution
 - **Test** classes inherit from Base Test class. This allows us to keep tests generic enough where we can support ios in the future with minimal changes. We can overwrite the driver options/capabilities according to the mobile OS, in test classes
 - **Api Request maker** and **Data classes** work together to make efficient API calls and cache results in the instance of these data classes
-- Kotlin data classes are great, already come pre-equipped with equals() and toString() implementations, to make us write fast and easy to read and understand code. 
+- Kotlin's data classes are great, already come pre-equipped with equals() and toString() implementations, to make us write fast and easy to read and understand code. 
 - Data classes are also unbothered by field order, giving us confidence in our tests' stability even when using dynamic API data
 - Having **Page Object** classes also gives us the advantage of separating test and page object logic, making it easier to scale the testing framework without introducing fragility
 - All Page Object classes are derived from a **Base Actions** class
-- **Base Actions** class deals with all the appium api related to performing actions on the mobile UI. E.g scroll and find element until end of page. (Fun one to solve :D )
+- **Base Actions** class deals with all the appium api related to performing actions on the mobile UI. e.g scroll and find element until end of page. (Fun one to solve :D )
 - **Logger** is extended to all classes, objects, companion objects to allow for specific, object context level logging
 - The framework is designed to maintain uniform principles around abstraction, DRY, and functional ideas. Allowing us to build and scale cleanly and efficiently
 
 ## Test implementation
-#### Launch app and go through onboarding to Favorites page
+#### Launch app and go through Onboarding to Favorites page
 - Install theScore apk on an Android device and Launch app
 - Navigate through **Onboarding** to get to the **Favorites** page
 
 #### Get team profile data from theScore api
-- Make a HTTP request to theScore api and grab the current team's profile api response. (Note, we are using JUNIT parameterized approach and will test several teams from different sports.)
-- Parse the team profile api response and extract team full name, and team-stats from all possible seasons in the API Endpoint. (This is especially important because some soccer teams have multiple season stats and we scroll and verify through all that data)
+- Make HTTP request to theScore api and grab the current team's profile api response. (Note, we are using JUNIT parameterized approach and will test several teams from different sports.)
+- Parse the team profile api response and extract team full name, and team-stats from all possible seasons in the API Endpoint. (This is especially important because some soccer teams have multiple season stats, and we scroll and verify through all that data)
 
 #### Search for the team name using api data, navigate to team stats page
 - We use the api response Full Team Name and search and open the team page
@@ -111,15 +109,15 @@ The approach was based around a Fans/Users first strategy, where I thought about
  But we also regularly see UI bugs that show data incorrectly, even when the API is healthy.
 
 Verifying the data itself on the UI level was challenging. Especially since, without developer or android root level access, I was unlikely to read any API calls on the mobile app.
-I pondered over some ideas of using public apis that might provide sports stats and info, but there is no gaurantee that a 3rd party stats provider will match with theScore api info.
+I pondered over some ideas of using public apis that might provide sports stats and info, but there is no guarantee that a 3rd party stats provider will match with theScore api info.
 
-Soon after it occured to me, theScore website, although quite limited in functionality, the website displays matches/games and team-stats pages.
+Soon after it occurred to me, theScore website, although quite limited in functionality, the website displays matches/games and team-stats pages.
 Having the website render this information meant that I can listen into the network traffic in the browser dev tools.
 After investigating further, I managed to discover some public theScore api endpoints. I used these endpoints to give me information about team names, standings, header texts etc.
 
 Although we can talk about how calling the API in a UI test can introduce some level of instability, the tests will continue to provide value until the api changes.
  
-Kotlin data classes also provide a great way to map all that data using GSON to kotlin object. I cached those objects as well so I can quickly and reliably access any API data values, without slowing down or disrupting the UI test
+Kotlin's data classes also provide a great way to map all that data using GSON to kotlin object. I cached those objects as well so that I can quickly and reliably access any API data values, without slowing down or disrupting the UI test
 
 
 ## Coverage assessment of feature
@@ -135,7 +133,7 @@ However, I just covered one way of getting to a teams page.
 
 The project solution can be expanded to cover more test scenarios:
 - User logs in, then navigates to team page
-- Already logged in user navigates to team page
+- Already logged-in user navigates to team page
 - Search for a team
 - Clicking on a team chip or team element in (leagues, matches, favorites, standings pages etc.)
 - Test for a team that does not have stats, and is expected not to show stats tab
@@ -145,14 +143,14 @@ The project solution can be expanded to cover more test scenarios:
 - Failure image screenshot for each any test failures. Very helpful in debugging
 - Abstract the appium driver logic out of test classes, so that we can add IOS to the project as well, without having to write any new setup code
 - Project directory structure, better approach to how to design classes, and where to use functional code instead of better performance
-- Github actions, static analysis tools. Appium testing on remote devices/farms
+- GitHub actions, static analysis tools. Appium testing on remote devices/farms
 - Explore more of the new Appium 2.0 API. Promising image/visual automation
 - Add http listener to listen to logs on remote port, send logs to cloud platforms
 - More debugging tools ADB library instead of shell command relying on an active shell/terminal processes
 
 
 ## Known issues
-- I am using Appium 2.0 to block any Android system level pop ups. This is just a flag that we can disable as needed.
+- I am using Appium 2.0 to block any Android system level popups. This is just a flag that we can disable as needed.
 - theScore Technical Issue popup can be unexpected. I have added an explicit condition to deal with this
-- Every 1 in 20 test runs, I notice Appium intermingling the values of web elements when scrolling. Could be a appium 2.0 related issue since its still in beta.
-- I tried to cover most error/exception handling cases I can think of, but its possible to run into some unexpected exceptions from driver misbehaving 
+- Every 1 in 20 test runs, I notice Appium intermingling the values of web elements when scrolling. Could be appium 2.0 related issue since it is still in beta.
+- I tried to cover most error/exception handling cases I can think of, but it is possible to run into some unexpected exceptions from driver misbehaving 
