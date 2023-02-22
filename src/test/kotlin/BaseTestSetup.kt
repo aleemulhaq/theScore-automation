@@ -6,6 +6,7 @@ import org.junit.jupiter.api.AfterAll
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.TestInstance
+import org.openqa.selenium.SessionNotCreatedException
 import java.io.BufferedReader
 import java.io.File
 import java.io.IOException
@@ -16,7 +17,7 @@ import java.net.URL
 open class BaseTestSetup : Logging {
     protected var driver: AndroidDriver? = null
     private val service: AppiumDriverLocalService = AppiumDriverLocalService.buildDefaultService()
-    private var firstAndroidAdbDeviceID: String? = null
+    private var firstAndroidAdbDeviceID: String = ""
 
     @BeforeAll
     fun setup() {
@@ -26,14 +27,20 @@ open class BaseTestSetup : Logging {
             logger.trace("Initiating tests")
             // we can add conditional here for optional iphone testing setup
             driver = appiumAndroidSetup()
-            logger.info("Appium Driver capabilities: {${driver?.capabilities}")
+            logger.info("Appium service initialized: {${service.isRunning}")
+            logger.info("Appium driver context: {${driver?.context}")
+            logger.info("Appium driver capabilities: {${driver?.capabilities}")
             val popupModals = PopupModals(driver)
             assertTrue(popupModals.waitForSplashScreenEnd())
         } catch (e: IllegalArgumentException) {
-            logger.fatal("Exception thrown while initializing appium service {$service.isRunning} and driver {$driver}")
+            logger.fatal("Exception thrown while initializing appium service and driver." +
+                    "Server port/address is likely already in use. Please kill appium server process and try again.")
+        }
+        catch (e: SessionNotCreatedException) {
+            logger.fatal("Appium server session not created exception thrown!")
         }
         catch (e: NullPointerException) {
-            logger.fatal("Null pointer exception thrown while initializing appium service {$service.isRunning} and driver {$driver}")
+            logger.fatal("Null pointer exception thrown while initializing appium service.")
         }
     }
 
@@ -53,10 +60,10 @@ open class BaseTestSetup : Logging {
     }
 
     // android driver setup
-    private fun appiumAndroidSetup() : AndroidDriver? {
+    private fun appiumAndroidSetup() : AndroidDriver {
         getListOfConnectedAndroidDevices()
 
-        val directory = File("");
+        val directory = File("")
         val appPath = directory.absolutePath + "/theScore.apk"
         val options = UiAutomator2Options()
             .setPlatformName("Android")
@@ -64,7 +71,7 @@ open class BaseTestSetup : Logging {
             .setApp(appPath)
             .setAutoGrantPermissions(true)
 
-        if (!firstAndroidAdbDeviceID!!.contains("emulator") && (firstAndroidAdbDeviceID != null && firstAndroidAdbDeviceID != "")) {
+        if (firstAndroidAdbDeviceID != "") {
             options.setUdid(firstAndroidAdbDeviceID) // then it is a hardware device
         }
         else{
@@ -93,22 +100,22 @@ open class BaseTestSetup : Logging {
                     val matches = """^([a-zA-Z0-9\-]+)(\s+)(device)""".toRegex().find(it)
                     matches?.groupValues?.get(1)
                 }
-                if (deviceIds != null) {
+                if (deviceIds != null && deviceIds.isNotEmpty()) {
                     logger.info("Successfully grabbed list of devices: {$deviceIds}")
                     logger.info("Returning first available device id: {$deviceIds[0]}")
                     firstAndroidAdbDeviceID = deviceIds[0]
                 }
             } else {
-                logger.fatal("Commandline process to fetch adb device list failed to terminate!")
+                logger.fatal("Commandline process to fetch adb device list failed to terminate!.")
+                firstAndroidAdbDeviceID = ""
             }
         } catch (e: IOException) {
-            logger.fatal("Commandline process to fetch adb device list failed when reading process stream: {$e.printStackTrace()}")
-            e.printStackTrace()
+            logger.fatal("Commandline process to fetch adb device list failed when reading process stream.")
         } catch (e: InterruptedException) {
-            logger.fatal("Commandline process to fetch adb device list failed. Process was interrupted. {$e.printStackTrace()}")
+            logger.fatal("Commandline process to fetch adb device list failed. Process was interrupted.")
         }
         catch (e: IllegalArgumentException) {
-            logger.fatal("Commandline process to fetch adb device list failed. Process was interrupted. {$e.printStackTrace()}")
+            logger.fatal("Commandline process to fetch adb device list failed. Process was interrupted.")
         }
     }
 }

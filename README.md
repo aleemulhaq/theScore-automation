@@ -40,24 +40,31 @@ Currently, we are able to run the project against two kinds of devices:
 
 #### Android Emulators
 - Only support **Pixel_6_API_33** specifically at the moment. This is done on purpose so that we always have an emulator back up option that boots up.
-- Please have the **Pixel_6_API_33** virtual device downloaded through Android sdk tools or Android studio device manager
-#### Note about connected devices:
-- The only virtual device that will run the tests is **Pixel_6_API_33** and exactly with that AVD name
+- Please have the **Pixel_6_API_33** virtual device downloaded and running through Android sdk tools or Android studio  
+#### Warning Note (connected devices):
+- The only **virtual** device that will run the tests is **Pixel_6_API_33** and exactly with that AVD name
 - If a hardware device is connected, it will always be prioritized for testing
-
+- Either android sdk tools path must be properly configured in environment or have Android studio running in background prior to building project on the virtual device
+- If no input devices are found, neither hardware or a connected virtual device, an `input not set` exception is thrown and project build fails
 
 ## Setup & Running tests
 To build the project and execute tests, run the following command in the project path.
 e.g:
-- Set file path to access my project directory `cd.../../user/../../theScore-automation`,
-- Run `gradle build` or `./gradlew clean test` command in theScore-automation project root
-- After each successful test run, the sessions logs are saved in the `projDir/logs/` directory
+- Run `git clone https://github.com/aleemulhaq/theScore-automation.git` (on a computer with environment requirements listed in the section above)
+- Set file path to access my project directory `cd theScore-automation`
+- Run `./gradlew clean test` command in theScore-automation project root
+- After each successful test run, the sessions logs are saved in the `theScore-automation/logs/` directory
+
+Warning note: 
+- Please make sure port `4723` is free to use at address `0.0.0.0:4723`
+- No server instance of appium should already be running prior to building and running this project. If a server is already running, expect to see a `EADDRINUSE: address already in use 0.0.0.0:4723` error, and build failure
+- I built this project on Appium's new 2.0 release. However, this might result in unexpected server issues, e.g. `Socket Hangup` error, and build failure that I experience when testing on real devices
 
 
 ## Automation Framework Structure
 The automation framework is built open the following underlying structure
 
-![Framework](/resources/framework.png)
+![Framework](./resources/framework.png)
 
 - The entry point of the application is **Base Test** class
 - All setup utilities are initialized from the Base Test class

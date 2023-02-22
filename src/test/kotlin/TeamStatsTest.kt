@@ -13,7 +13,7 @@ class TeamStatsTest: BaseTestSetup() {
         val onboarding = Onboarding(driver)
         assertTrue(onboarding.clickOnboardingNext())
         assertTrue(onboarding.clickOnboardingNext())
-        assertTrue(onboarding.clickOnboardingSportItemName(), "Failed to tap on onoarding sport icon/item")
+        assertTrue(onboarding.clickOnboardingSportItemName(), "Failed to tap on onboarding sport icon/item")
         assertTrue(onboarding.clickOnboardingNext())
         assertTrue(onboarding.clickOnboardingNext(), "Failed to tap on onboarding next")
         val popupModals = PopupModals(driver)
