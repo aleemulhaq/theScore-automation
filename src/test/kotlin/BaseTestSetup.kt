@@ -1,6 +1,7 @@
 import io.appium.java_client.android.AndroidDriver
 import io.appium.java_client.android.options.UiAutomator2Options
 import io.appium.java_client.service.local.AppiumDriverLocalService
+import io.appium.java_client.service.local.AppiumServiceBuilder
 import org.apache.logging.log4j.kotlin.Logging
 import org.junit.jupiter.api.AfterAll
 import org.junit.jupiter.api.Assertions.assertTrue
@@ -11,12 +12,11 @@ import java.io.BufferedReader
 import java.io.File
 import java.io.IOException
 import java.io.InputStreamReader
-import java.net.URL
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 open class BaseTestSetup : Logging {
     protected var driver: AndroidDriver? = null
-    private val service: AppiumDriverLocalService = AppiumDriverLocalService.buildDefaultService()
+    private val service: AppiumDriverLocalService = buildService()
     private var firstAndroidAdbDeviceID: String = ""
 
     @BeforeAll
@@ -53,8 +53,16 @@ open class BaseTestSetup : Logging {
         logger.trace("Concluded all tests")
     }
 
+    private fun buildService() :  AppiumDriverLocalService {
+        logger.info("Building appium service")
+        val serviceBuilder = AppiumServiceBuilder()
+        serviceBuilder.usingAnyFreePort()
+        return AppiumDriverLocalService.buildService(serviceBuilder)
+    }
+
     // appium server 2.0 setup
     private fun appiumServiceStart() {
+        buildService()
         logger.info("Starting appium service")
         service.start()
     }
@@ -62,7 +70,14 @@ open class BaseTestSetup : Logging {
     // android driver setup
     private fun appiumAndroidSetup() : AndroidDriver {
         getListOfConnectedAndroidDevices()
+        val options = setUIAutomator2Options()
+        // start service
+        val serviceUrl = service.url
+        logger.info("Initializing Android Uiautomator2 driver at: $serviceUrl")
+        return AndroidDriver( serviceUrl, options)
+    }
 
+    private fun setUIAutomator2Options() : UiAutomator2Options{
         val directory = File("")
         val appPath = directory.absolutePath + "/theScore.apk"
         val options = UiAutomator2Options()
@@ -71,16 +86,11 @@ open class BaseTestSetup : Logging {
             .setApp(appPath)
             .setAutoGrantPermissions(true)
 
-        if (firstAndroidAdbDeviceID != "") {
-            options.setUdid(firstAndroidAdbDeviceID) // then it is a hardware device
-        }
-        else{
-            options.setAvd("Pixel_6_API_33") // default to pixel 6 if adb devices list failed to retrieve hardware device
-        }
-
-        val serviceUrl = "http://127.0.0.1:4723"
-        logger.info("Initializing Android Uiautomator2 driver at: $serviceUrl")
-        return AndroidDriver( URL(serviceUrl), options)
+        // then it is a hardware or connected emulator device
+        // if no connected devices, then try to launch Pixel_6_API_33 through android sdk
+        // default to pixel 6 if adb devices list failed to retrieve hardware device
+        if (firstAndroidAdbDeviceID != "") options.setUdid(firstAndroidAdbDeviceID) else options.setAvd("Pixel_6_API_33")
+        return options
     }
 
     // run adb command and parse result to get a list of devices
