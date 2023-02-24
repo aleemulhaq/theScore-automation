@@ -29,7 +29,7 @@ open class BaseTestSetup : Logging {
             logger.info("Initiating tests")
 
             // we can add conditional here for optional iphone testing setup
-            driver = appiumAndroidSetup()
+            driver = androidDriverSetup()
             if (!service.isRunning) logger.fatal("Appium driver NULL")
             if (driver == null) logger.fatal("Appium driver NULL")
             logger.info("Appium service initialized: {${service.isRunning}")
@@ -79,7 +79,7 @@ open class BaseTestSetup : Logging {
     }
 
     // android driver setup
-    private fun appiumAndroidSetup() : AndroidDriver {
+    private fun androidDriverSetup() : AndroidDriver {
         getListOfConnectedAndroidDevices()
         val options = setUIAutomator2Options()
         // start service
