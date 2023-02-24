@@ -36,7 +36,6 @@ open class BaseTestSetup : Logging {
             logger.info("Appium service initialized: {${service.isRunning}")
             logger.info("Appium driver context: {${driver?.context}")
             logger.info("Appium driver capabilities: {${driver?.capabilities}")
-//            Thread.sleep(15000)
             val popupModals = PopupModals(driver)
             assertTrue(popupModals.waitForSplashScreenEnd())
         } catch (e: IllegalArgumentException) {
