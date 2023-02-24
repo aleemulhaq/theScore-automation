@@ -27,25 +27,37 @@ open class BaseTestSetup : Logging {
             logger.trace("Initiating tests")
             // we can add conditional here for optional iphone testing setup
             driver = appiumAndroidSetup()
+            if (driver == null) logger.fatal("Appium driver NULL")
+            if (!service.isRunning) logger.fatal("Appium driver NULL")
+
+            assertTrue(driver != null, "driver null!")
+            assertTrue(service.isRunning, "service not running")
+
             logger.info("Appium service initialized: {${service.isRunning}")
             logger.info("Appium driver context: {${driver?.context}")
             logger.info("Appium driver capabilities: {${driver?.capabilities}")
+//            Thread.sleep(15000)
             val popupModals = PopupModals(driver)
             assertTrue(popupModals.waitForSplashScreenEnd())
         } catch (e: IllegalArgumentException) {
             logger.fatal("Exception thrown while initializing appium service and driver." +
                     "Server port/address is likely already in use. Please kill appium server process and try again.")
+            tearDown()
+
         }
         catch (e: SessionNotCreatedException) {
             logger.fatal("Appium server session not created exception thrown!")
+            tearDown()
         }
         catch (e: NullPointerException) {
             logger.fatal("Null pointer exception thrown while initializing appium service.")
+            tearDown()
         }
     }
 
     @AfterAll
     fun tearDown() {
+        logger.info("Terminating test run")
         logger.info("Quitting appium driver")
         this.driver?.quit() ?: throw Exception("Driver instance was unable to quit.")
         logger.info("Quitting appium service")
@@ -74,7 +86,7 @@ open class BaseTestSetup : Logging {
         // start service
         val serviceUrl = service.url
         logger.info("Initializing Android Uiautomator2 driver at: $serviceUrl")
-        return AndroidDriver( serviceUrl, options)
+        return AndroidDriver(serviceUrl, options)
     }
 
     private fun setUIAutomator2Options() : UiAutomator2Options{
@@ -85,6 +97,7 @@ open class BaseTestSetup : Logging {
             .setAutomationName("UiAutomator2")
             .setApp(appPath)
             .setAutoGrantPermissions(true)
+            .setAppWaitForLaunch(true)
 
         // then it is a hardware or connected emulator device
         // if no connected devices, then try to launch Pixel_6_API_33 through android sdk
