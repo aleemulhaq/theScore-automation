@@ -66,7 +66,6 @@ class Team(driver: AndroidDriver?) : BaseActions(driver) {
                 swipeNumber += 1
                 logger.info("Performing swipe number {$swipeNumber}")
                 doSwipe(driver, start, end, 1000) //with duration 1s
-                Thread.sleep(3000)
             }
             logger.info("Swiped down {$swipeNumber} times to reach end of team-stats page")
             logger.info("Verified all UI team stats match stats from theScore API")

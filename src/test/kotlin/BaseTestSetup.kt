@@ -25,13 +25,13 @@ open class BaseTestSetup : Logging {
             setUpLogging() // logger setup here as this is entry points of test run
             appiumServiceStart() // start appium 2.0 service
             logger.trace("Initiating tests")
+            logger.info("Initiating tests")
             // we can add conditional here for optional iphone testing setup
             driver = appiumAndroidSetup()
-            if (driver == null) logger.fatal("Appium driver NULL")
-            if (!service.isRunning) logger.fatal("Appium driver NULL")
-
             assertTrue(driver != null, "driver null!")
             assertTrue(service.isRunning, "service not running")
+            if (!service.isRunning) logger.fatal("Appium driver NULL")
+            if (driver == null) logger.fatal("Appium driver NULL")
 
             logger.info("Appium service initialized: {${service.isRunning}")
             logger.info("Appium driver context: {${driver?.context}")
@@ -58,7 +58,7 @@ open class BaseTestSetup : Logging {
     fun tearDown() {
         logger.info("Terminating test run")
         logger.info("Quitting appium driver")
-        this.driver?.quit() ?: throw Exception("Driver instance was unable to quit.")
+        driver?.quit() ?: throw Exception("Driver instance was unable to quit.")
         logger.info("Quitting appium service")
         service.stop()
         logger.trace("Concluded all tests")
