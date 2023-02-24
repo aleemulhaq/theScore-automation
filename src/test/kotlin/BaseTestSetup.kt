@@ -15,8 +15,8 @@ import java.io.InputStreamReader
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 open class BaseTestSetup : Logging {
-    protected var driver: AndroidDriver? = null
     private val service: AppiumDriverLocalService = buildService()
+    protected var driver: AndroidDriver? = null
     private var firstAndroidAdbDeviceID: String = ""
 
     @BeforeAll
@@ -74,7 +74,6 @@ open class BaseTestSetup : Logging {
 
     // appium server 2.0 setup
     private fun appiumServiceStart() {
-        buildService()
         logger.info("Starting appium service")
         service.start()
     }
