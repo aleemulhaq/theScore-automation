@@ -30,8 +30,8 @@ open class BaseTestSetup : Logging {
 
             // we can add conditional here for optional iphone testing setup
             driver = androidDriverSetup()
-            if (!service.isRunning) logger.fatal("Appium driver NULL")
-            if (driver == null) logger.fatal("Appium driver NULL")
+            if (!service.isRunning) logger.fatal("Appium service is not running")
+            if (driver == null) logger.fatal("Appium driver is NULL")
             logger.info("Appium service initialized: {${service.isRunning}")
             logger.info("Appium driver context: {${driver?.context}")
             logger.info("Appium driver capabilities: {${driver?.capabilities}")
