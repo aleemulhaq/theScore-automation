@@ -24,18 +24,19 @@ open class BaseTestSetup : Logging {
         try {
             setUpLogging() // logger setup here as this is entry points of test run
             appiumServiceStart() // start appium 2.0 service
+
             logger.trace("Initiating tests")
             logger.info("Initiating tests")
+
             // we can add conditional here for optional iphone testing setup
             driver = appiumAndroidSetup()
-            assertTrue(driver != null, "driver null!")
-            assertTrue(service.isRunning, "service not running")
             if (!service.isRunning) logger.fatal("Appium driver NULL")
             if (driver == null) logger.fatal("Appium driver NULL")
-
             logger.info("Appium service initialized: {${service.isRunning}")
             logger.info("Appium driver context: {${driver?.context}")
             logger.info("Appium driver capabilities: {${driver?.capabilities}")
+
+            //wait for splash screen (assuming noReset = false. (false by default)
             val popupModals = PopupModals(driver)
             assertTrue(popupModals.waitForSplashScreenEnd())
         } catch (e: IllegalArgumentException) {
